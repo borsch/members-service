@@ -2,6 +2,7 @@ package borsch.membersservice.services.members;
 
 import borsch.membersservice.domain.dto.MemberDto;
 import borsch.membersservice.domain.entities.MemberEntity;
+import borsch.membersservice.exceptions.NoSuchEntityException;
 import borsch.membersservice.persistence.dao.MemberRepository;
 import ma.glasnost.orika.MapperFacade;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,11 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public MemberDto getById(String id) {
         Optional<MemberEntity> optionalEntity = memberRepository.findById(id);
+
+        if (!optionalEntity.isPresent()) {
+            throw new NoSuchEntityException("No such member");
+        }
+
         MemberEntity entity = optionalEntity.get();
 
         return mapperFacade.map(entity, MemberDto.class);
@@ -48,8 +54,12 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public boolean update(MemberDto dto) {
         Optional<MemberEntity> optionalEntity = memberRepository.findById(dto.getId());
-        MemberEntity entity = optionalEntity.get();
 
+        if (!optionalEntity.isPresent()) {
+            throw new NoSuchEntityException("No such member");
+        }
+
+        MemberEntity entity = optionalEntity.get();
         mapperFacade.map(dto, entity);
         memberRepository.save(entity);
 
@@ -59,8 +69,12 @@ public class MemberServiceImpl implements IMemberService {
     @Override
     public boolean delete(String id) {
         Optional<MemberEntity> optionalEntity = memberRepository.findById(id);
-        MemberEntity entity = optionalEntity.get();
 
+        if (!optionalEntity.isPresent()) {
+            throw new NoSuchEntityException("No such member");
+        }
+
+        MemberEntity entity = optionalEntity.get();
         memberRepository.delete(entity);
 
         return true;
