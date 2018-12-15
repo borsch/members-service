@@ -5,10 +5,12 @@ import borsch.membersservice.services.members.IMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@PreAuthorize("isAuthenticated()")
 @Api(value = "Members")
 @RestController
 @RequestMapping("/api/members")
