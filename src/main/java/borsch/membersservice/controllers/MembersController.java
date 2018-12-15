@@ -1,12 +1,12 @@
 package borsch.membersservice.controllers;
 
 import borsch.membersservice.domain.dto.MemberDto;
+import borsch.membersservice.services.members.IMemberService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Api(value = "Members")
@@ -14,10 +14,16 @@ import java.util.List;
 @RequestMapping("/api/members")
 public class MembersController {
 
+    private final IMemberService memberService;
+
+    public MembersController(IMemberService memberService) {
+        this.memberService = memberService;
+    }
+
     @ApiOperation(value = "Get list of members by criterion")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public List<MemberDto> getList() {
-        return new ArrayList<>();
+        return memberService.getList();
     }
 
     @ApiOperation(value = "Get Specific member by id")
@@ -26,7 +32,7 @@ public class MembersController {
             @ApiParam(name = "id", value = "Member's id", required = true)
             @PathVariable("id") String id
     ) {
-        return new MemberDto();
+        return memberService.getById(id);
     }
 
     @ApiOperation(value = "Create new member")
@@ -35,7 +41,7 @@ public class MembersController {
             @ApiParam(name = "member dto", value = "object to be saved")
             @RequestBody MemberDto dto
     ) {
-        return "";
+        return memberService.create(dto);
     }
 
     @ApiOperation(value = "Update existed member")
@@ -44,7 +50,7 @@ public class MembersController {
             @ApiParam(name = "member dto", value = "object to be update. contains only fields to be updated within ID")
             @RequestBody MemberDto dto
     ) {
-        return true;
+        return memberService.update(dto);
     }
 
     @ApiOperation(value = "Delete member by specific ID")
@@ -53,7 +59,7 @@ public class MembersController {
             @ApiParam(name = "id", required = true)
             @PathVariable("id") String id
     ) {
-        return true;
+        return memberService.delete(id);
     }
 
 }
